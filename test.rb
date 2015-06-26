@@ -27,7 +27,8 @@ get '/products' do
     #content_type 'application/javascript'
     response['Access-Control-Allow-Origin'] = 'http:localhost:4567'
 
-    "#{callback}(#{products.to_json})"
+    #{}"#{callback}(#{products.to_json})"
+    products.to_json
 end
 
 post '/update' do

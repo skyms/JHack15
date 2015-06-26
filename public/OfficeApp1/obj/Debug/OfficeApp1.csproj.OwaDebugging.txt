@@ -1,0 +1,7 @@
+False
+0b09f943-2c3d-4a6c-9e87-edf919c4ab5cc14a8f46-4293-4691-b539-fe6c2164a86a
+{b49cb220-c363-4273-a2d5-1cda77075689}{9666aba1-9e6b-44be-90be-0346f38cb65a}
+{59c5df99-ed4e-4cc5-b7ba-48e20c7ccb44}
+1.0.0.0
+OfficeApp1
+_layouts/15/

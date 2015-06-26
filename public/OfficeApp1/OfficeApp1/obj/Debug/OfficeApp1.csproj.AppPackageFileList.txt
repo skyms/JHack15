@@ -1,0 +1,2 @@
+bin\Debug\app.publish\OfficeAppManifests\OfficeApp1Manifest.xml
+C:\ruby\JHack15\public\OfficeApp1\OfficeApp1\bin\Debug\app.publish\OfficeApp1.app
