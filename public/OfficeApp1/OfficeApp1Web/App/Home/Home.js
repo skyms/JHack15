@@ -13,6 +13,8 @@
             $('#push-data').click(pushData);
             $('#delete-data').click(deleteData);
             $('#monitor-changes').click(monitorEvents);
+            $('#highlight-inventory').click(highlightInventory);
+
 
         });
     };
@@ -111,11 +113,15 @@
        var rangeAddress = "A1:D" + rangevalues.length;
         var ctx = new Excel.ExcelClientContext();
        // ctx.workbook.worksheets.getActiveWorksheet().getRange("A1:A100").numberFormat = "@";
-        ctx.workbook.worksheets.getActiveWorksheet().getUsedRange().delete();
+        ctx.workbook.worksheets.getActiveWorksheet().getUsedRange().clear();
         var range = ctx.workbook.worksheets.getActiveWorksheet().getRange(rangeAddress);
 
         range.values = rangevalues;
+
         
+        ctx.workbook.worksheets.getActiveWorksheet().getRange("A1:D1").format.fill.color = "66CCFF";
+        ctx.workbook.worksheets.getActiveWorksheet().getRange("A1:D1").format.font.bold = true;
+        ctx.workbook.worksheets.getActiveWorksheet().getRange("A1:D1").format.font.size = 14;
         ctx.executeAsync().then(function () {
             app.showNotification("Write to Range"+rangeAddress+"is Successful!");
         }, function (error) {
@@ -167,9 +173,9 @@
 
             ctx.workbook.worksheets.getActiveWorksheet().getRange("G2:G2").formulas = "=COUNTIF(" + countRange + ",\"<200\")";
             ctx.workbook.worksheets.getActiveWorksheet().getRange("G3:G3").formulas = "=COUNTIF(" + countRange + ",\"<400\")-G2";
-            ctx.workbook.worksheets.getActiveWorksheet().getRange("G4:G4").formulas = "=COUNTIF(" + countRange + ",\"<600\")-G3";
-            ctx.workbook.worksheets.getActiveWorksheet().getRange("G5:G5").formulas = "=COUNTIF(" + countRange + ",\"<800\")-G4";
-            ctx.workbook.worksheets.getActiveWorksheet().getRange("G6:G6").formulas = "=COUNTIF(" + countRange + ",\"<1000\")-G5";
+            ctx.workbook.worksheets.getActiveWorksheet().getRange("G4:G4").formulas = "=COUNTIF(" + countRange + ",\"<600\")-G3-G2";
+            ctx.workbook.worksheets.getActiveWorksheet().getRange("G5:G5").formulas = "=COUNTIF(" + countRange + ",\"<800\")-G4-G3-G2";
+            ctx.workbook.worksheets.getActiveWorksheet().getRange("G6:G6").formulas = "=COUNTIF(" + countRange + ",\"<1000\")-G5-G4-G3-G2";
             ctx.workbook.worksheets.getActiveWorksheet().getRange("G7:G7").formulas = "=COUNTIF(" + countRange + ",\">=1000\")";
             ctx.workbook.tables.add(sheetName + "!F1:G7", true);
             ctx.executeAsync().then(function () {
@@ -178,9 +184,17 @@
                 chart.title.text = "Price Distribution";
                 chart.title.format.font.color = "blue";
                 chart.dataLabels.showValue = true;
-                
-               
 
+                chart.axes.categoryAxis.title.text = "Price";
+                chart.axes.valueAxis.title.text = "Count";
+
+                chart.axes.categoryAxis.title.format.font.color = "blue";
+                chart.axes.valueAxis.title.format.font.color= "blue";
+                
+                var colors = ["Lavender", "Cyan", "GreenYellow", "green", "orange", "purple", "Gray"];
+                for (var i = 0; i <6; i++) {
+                    chart.series.getItemAt(0).points.getItemAt(i).format.fill.setSolidColor(colors[i]);
+                }
                 ctx.executeAsync().then(function () {
                     app.showNotification("Write to Range" + usedRange.address + "is Successful!");
                 }, function (error) {
@@ -332,6 +346,31 @@
         });
 
 
+    }
+    function highlightInventory() {
+        var ctx = new Excel.ExcelClientContext();
+        var usedRange = ctx.workbook.worksheets.getActiveWorksheet().getRange("C:C").getUsedRange();
+        ctx.load(usedRange);
+        ctx.executeAsync().then(function () {
+            for (var i = 1; i < usedRange.rowCount; i++) {
+                var rangeaddr = "";
+                if (usedRange.values[i][0] <= 3) {
+                    var j = i + 1;
+                    rangeaddr = "C" + j + ":C" + j;
+                    ctx.workbook.worksheets.getActiveWorksheet().getRange(rangeaddr).format.fill.color = "red";
+
+                }
+
+            }
+
+
+            ctx.executeAsync().then(function () {
+                app.showNotification("Write to Range" + usedRange.address + "is Successful!");
+            }, function (error) {
+                app.showNotification("Error", JSON.stringify(error));
+            });
+
+        });
     }
 
 })();
